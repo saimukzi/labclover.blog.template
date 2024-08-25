@@ -5,22 +5,19 @@ import importlib
 
 def gen_stepfunc_list_dict(search_path, module_prefix):
     my_dir = os.path.dirname(search_path)
-    feature_py_list = os.listdir(my_dir)
-    feature_py_list = filter(lambda x: x.startswith(module_prefix), feature_py_list)
-    feature_py_list = filter(lambda x: x.endswith('.py'), feature_py_list)
-    feature_py_list = map(lambda x: x[:-3], feature_py_list)
-    feature_py_list = list(feature_py_list)
-    module_id_to_module_dict = {}
-    for feature_py in feature_py_list:
-        module_id_to_module_dict[feature_py[len(module_prefix):]] = importlib.import_module(feature_py)
+    feature_module_list = os.listdir(my_dir)
+    feature_module_list = filter(lambda x: x.startswith(module_prefix), feature_module_list)
+    feature_module_list = filter(lambda x: x.endswith('.py'), feature_module_list)
+    feature_module_list = map(lambda x: x[:-3], feature_module_list)
+    feature_module_list = map(lambda i: importlib.import_module(i), feature_module_list)
+    feature_module_list = list(feature_module_list)
 
     stepid_to_stepkey_set_dict = {}
     stepkey_to_stepfunc_dict = {}
-    # stepid_to_stepkey_to_stepfunc_dict_dict = {}
     stepkey_dependency_0_to_1_set_dict = {}
     stepkey_dependency_1_to_0_set_dict = {}
 
-    for module in module_id_to_module_dict.values():
+    for module in feature_module_list:
         for func_name in dir(module):
             if func_name.startswith('_step_'):
                 stepfunc = getattr(module, func_name)
