@@ -1,15 +1,15 @@
 <html>
 <head>
-  {% if article_meta_data is defined %}
-    <title>{{article_meta_data.title}} | {{config.title}}</title>
+  {% if article_runtime is defined %}
+    <title>{{article_runtime.article_meta.title}} | {{main_runtime.config_data.title}}</title>
   {% else %}
-    <title>{{config.title}}</title>
+    <title>{{main_runtime.config_data.title}}</title>
   {% endif %}
   <meta charset="UTF-8">
   <script>
-    const IS_article = {% if article_meta_data is defined %}true{% else %}false{% endif %};
-    const ARTICLE_META = {% if article_meta_data is defined %}{{article_meta_data|json_encode}}{% else %}null{% endif %};
-    const CONFIG = {{config|json_encode}};
+    const IS_article = {% if article_runtime is defined %}true{% else %}false{% endif %};
+    const ARTICLE_META = {% if article_runtime is defined %}{{article_runtime.article_meta|json_encode}}{% else %}null{% endif %};
+    const CONFIG = {{main_runtime.config_data|json_encode}};
   </script>
   <script src="{{'js/jquery-3.7.1.min.js'|abs}}"></script>
   <script src="{{'js/md5.min.js'|abs}}"></script>
@@ -19,21 +19,21 @@
   <div id="all_tag_list">
     <p>All tag list</p>
     <ul>
-      {% for tag_data in runtime.blog_meta_dict.tag_data_list %}
+      {% for tag_data in main_runtime.blog_meta_dict.tag_data_list %}
         <li>{{tag_data.tag_id}}</li>
       {% endfor %}
     </ul>
   </div>
-  {% if article_content is defined %}
+  {% if article_runtime is defined %}
     <div id="target_article">
-      <h1 class="article_title">{{article_meta_data.title}}</h1>
+      <h1 class="article_title">{{article_runtime.article_meta.title}}</h1>
       <div class="article_content">
-        {{article_content}}
+        {{article_runtime.article_content}}
       </div>
       <div class="article_tag_list">
         <p>Article tag list</p>
         <ul>
-          {% for tag_data in runtime.blog_meta_dict.tag_data_list %}
+          {% for tag_data in main_runtime.blog_meta_dict.tag_data_list %}
             <li><a href="{{tag_data.data_url}}">{{tag_data.tag_id}}</a></li>
           {% endfor %}
         </ul>

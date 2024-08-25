@@ -95,16 +95,6 @@ _STEP_DEPENDENCY_LIST.append((_step_main_resource_suffix_blackset, _feature_reso
 def _step_outputarticle_article_data(article_runtime, main_runtime):
     article_runtime.article_data = get_article_data(article_runtime.article_meta['_path'])
 
-# TODO: remove _step_outputarticle_render_data
-def _step_outputarticle_render_data(article_runtime, main_runtime):
-    article_runtime.render_data = {
-        # 'res_base_absnpath': os.path.dirname(article_runtime.article_meta['_path']),
-        'article_meta_data': article_runtime.article_meta,
-        'config': main_runtime.config_data,
-        'runtime': main_runtime,
-        'article_runtime': article_runtime,
-    }
-
 def _step_outputarticle_db_path(article_runtime, main_runtime):
     db_path = _global.db_path('article.'+article_runtime.article_meta['id'], main_runtime)
     article_runtime.db_path = db_path
@@ -119,15 +109,18 @@ def _step_outputarticle_output_meta(article_runtime, main_runtime):
 _STEP_DEPENDENCY_LIST.append((_step_outputarticle_db_path, _step_outputarticle_output_meta))
 
 def _step_outputarticle_article_content(article_runtime, main_runtime):
-    render_data = dict(article_runtime.render_data)
-    render_data['res_base_absnpath'] = os.path.dirname(article_runtime.article_meta['_path'])
+    render_data = {
+        'res_base_absnpath': os.path.dirname(article_runtime.article_meta['_path']),
+        'article_runtime': article_runtime,
+        'main_runtime': main_runtime,
+    }
 
     article_content = article_runtime.article_data['content']
     article_content = main_runtime.jinja_env.from_string(article_content)
     article_content = article_content.render(render_data)
     article_runtime.article_content = article_content
 
-_STEP_DEPENDENCY_LIST.append((_step_outputarticle_render_data, _step_outputarticle_article_content))
+# _STEP_DEPENDENCY_LIST.append((_step_outputarticle_render_data, _step_outputarticle_article_content))
 _STEP_DEPENDENCY_LIST.append((_step_outputarticle_article_data, _step_outputarticle_article_content))
 
 def _step_outputarticle_output_content_txt(article_runtime, main_runtime):
@@ -139,9 +132,11 @@ def _step_outputarticle_output_content_txt(article_runtime, main_runtime):
 _STEP_DEPENDENCY_LIST.append((_step_outputarticle_article_content, _step_outputarticle_output_content_txt))
 
 def _step_outputarticle_output_content_html(article_runtime, main_runtime):
-    render_data = dict(article_runtime.render_data)
-    render_data['res_base_absnpath'] = main_runtime.config_data['input_path']
-    render_data['article_content'] = article_runtime.article_content
+    render_data = {
+        'res_base_absnpath': main_runtime.config_data['input_path'],
+        'article_runtime': article_runtime,
+        'main_runtime': main_runtime,
+    }
 
     article_id = article_runtime.article_meta['id']
     article_html_output_path = os.path.join(main_runtime.config_data['output_path'], 'articles', f'{article_id}.html')

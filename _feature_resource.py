@@ -80,7 +80,7 @@ def _step_main_jinja_env(runtime):
 
 @jinja2.pass_context
 def jinja_filter_res(context, input_path):
-    runtime = context['runtime']
+    runtime = context['main_runtime']
     res_base_absnpath = context['res_base_absnpath']
     input_absnpath = os.path.join(res_base_absnpath, input_path)
     assert(os.path.commonprefix([input_absnpath, runtime.config_data['input_path']]) == runtime.config_data['input_path'])

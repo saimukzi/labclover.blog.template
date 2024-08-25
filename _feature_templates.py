@@ -60,7 +60,7 @@ def jinja_filter_json_encode(obj):
 
 @jinja2.pass_context
 def jinja_filter_abs(context, input_uri):
-    runtime = context['runtime']
+    runtime = context['main_runtime']
     if input_uri.startswith('/'):
         output_url = urljoin(runtime.config_data['base_url'], input_uri[1:])
         return output_url
