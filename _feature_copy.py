@@ -12,7 +12,7 @@ import _global
 
 _STEP_DEPENDENCY_LIST = []
 
-def _step_scan(runtime):
+def _step_main_scan(runtime):
     copy_re_list = runtime.config_data.get('copy_re_list', [])
     copy_re_list = list(map(re.compile, copy_re_list))
 
@@ -30,27 +30,27 @@ def _step_scan(runtime):
         runtime.copy_absnpath_list.append(input_file_absnpath)
 
 
-_STEP_DEPENDENCY_LIST.append((_feature_base._step_load_config, _step_scan))
+_STEP_DEPENDENCY_LIST.append((_feature_base._step_main_load_config, _step_main_scan))
 
-def _step_filter(runtime):
+def _step_main_filter(runtime):
     copy_absnpath_set = set(runtime.copy_absnpath_list)
     runtime.input_resource_file_list = list(filter(lambda x: x not in copy_absnpath_set, runtime.input_resource_file_list))
 
-_STEP_DEPENDENCY_LIST.append((_feature_base._step_load_config, _step_filter))
-_STEP_DEPENDENCY_LIST.append((_step_scan,_step_filter))
-_STEP_DEPENDENCY_LIST.append((_feature_resource._step_gen_file_list, _step_filter))
-_STEP_DEPENDENCY_LIST.append((_step_filter, _feature_resource._step_input_resource_file_list_ready))
+_STEP_DEPENDENCY_LIST.append((_feature_base._step_main_load_config, _step_main_filter))
+_STEP_DEPENDENCY_LIST.append((_step_main_scan,_step_main_filter))
+_STEP_DEPENDENCY_LIST.append((_feature_resource._step_main_gen_file_list, _step_main_filter))
+_STEP_DEPENDENCY_LIST.append((_step_main_filter, _feature_resource._step_main_input_resource_file_list_ready))
 
-def _step_copy(runtime):
+def _step_main_copy(runtime):
     for copy_absnpath in runtime.copy_absnpath_list:
         copy_relnpath = os.path.relpath(copy_absnpath, runtime.config_data['input_path'])
         copy_output_npath = os.path.join(runtime.config_data['output_path'], copy_relnpath)
         os.makedirs(os.path.dirname(copy_output_npath), exist_ok=True)
         shutil.copy2(copy_absnpath, copy_output_npath)
 
-_STEP_DEPENDENCY_LIST.append((_feature_base._step_output_ready, _step_copy))
+_STEP_DEPENDENCY_LIST.append((_feature_base._step_main_output_ready, _step_main_copy))
 
-# def _step_jinja_env(runtime):
+# def _step_main_jinja_env(runtime):
 #     runtime.jinja_env.filters['copy'] = jinja_filter_copy
 
 # @jinja2.pass_context
@@ -74,7 +74,7 @@ _STEP_DEPENDENCY_LIST.append((_feature_base._step_output_ready, _step_copy))
 #         return output_url
 
 # _STEP_DEPENDENCY_LIST.append((
-#     '_feature_templates._step_jinja_env_init',
-#     _step_jinja_env,
-#     '_feature_templates._step_jinja_env_ready',
+#     '_feature_templates._step_main_jinja_env_init',
+#     _step_main_jinja_env,
+#     '_feature_templates._step_main_jinja_env_ready',
 # ))

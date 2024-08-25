@@ -10,29 +10,29 @@ import _global
 
 _STEP_DEPENDENCY_LIST = []
 
-def _step_resource_suffix_blackset_init(runtime):
+def _step_main_resource_suffix_blackset_init(runtime):
     runtime.resource_suffix_blackset = set()
 
-def _step_resource_suffix_blackset_ready(runtime):
+def _step_main_resource_suffix_blackset_ready(runtime):
     pass
 
-_STEP_DEPENDENCY_LIST.append((_step_resource_suffix_blackset_init, _step_resource_suffix_blackset_ready))
+_STEP_DEPENDENCY_LIST.append((_step_main_resource_suffix_blackset_init, _step_main_resource_suffix_blackset_ready))
 
-def _step_gen_file_list(runtime):
+def _step_main_gen_file_list(runtime):
     input_path = runtime.config_data['input_path']
     input_resource_file_list = _common.find_file(input_path)
     input_resource_file_list = filter(lambda x: not is_black(x, runtime), input_resource_file_list)
     input_resource_file_list = list(input_resource_file_list)
     runtime.input_resource_file_list = input_resource_file_list
 
-def _step_input_resource_file_list_ready(runtime):
+def _step_main_input_resource_file_list_ready(runtime):
     pass
 
-_STEP_DEPENDENCY_LIST.append((_feature_base._step_load_config,_step_gen_file_list))
-_STEP_DEPENDENCY_LIST.append((_step_resource_suffix_blackset_ready,_step_gen_file_list))
-_STEP_DEPENDENCY_LIST.append((_step_gen_file_list,_step_input_resource_file_list_ready))
+_STEP_DEPENDENCY_LIST.append((_feature_base._step_main_load_config,_step_main_gen_file_list))
+_STEP_DEPENDENCY_LIST.append((_step_main_resource_suffix_blackset_ready,_step_main_gen_file_list))
+_STEP_DEPENDENCY_LIST.append((_step_main_gen_file_list,_step_main_input_resource_file_list_ready))
 
-def _step_scan_res(runtime):
+def _step_main_scan_res(runtime):
     runtime.article_res_fn_to_url = {}
     runtime.article_res_output_list = []
     for res_path in runtime.input_resource_file_list:
@@ -52,20 +52,20 @@ def _step_scan_res(runtime):
         input_rel_path = os.path.relpath(res_path, runtime.config_data['input_path'])
         runtime.article_res_fn_to_url[input_rel_path] = output_url
 
-def _step_article_res_fn_to_url_ready(runtime):
+def _step_main_article_res_fn_to_url_ready(runtime):
     pass
 
-def _step_article_res_output_list_ready(runtime):
+def _step_main_article_res_output_list_ready(runtime):
     pass
 
-_STEP_DEPENDENCY_LIST.append((_feature_base._step_load_config, _step_scan_res))
-_STEP_DEPENDENCY_LIST.append((_step_input_resource_file_list_ready, _step_scan_res))
-_STEP_DEPENDENCY_LIST.append((_step_scan_res, _step_article_res_fn_to_url_ready))
-_STEP_DEPENDENCY_LIST.append((_step_scan_res, _step_article_res_output_list_ready))
-_STEP_DEPENDENCY_LIST.append((_step_article_res_fn_to_url_ready, _feature_base._step_output_ready))
-_STEP_DEPENDENCY_LIST.append((_step_article_res_output_list_ready, _feature_base._step_output_ready))
+_STEP_DEPENDENCY_LIST.append((_feature_base._step_main_load_config, _step_main_scan_res))
+_STEP_DEPENDENCY_LIST.append((_step_main_input_resource_file_list_ready, _step_main_scan_res))
+_STEP_DEPENDENCY_LIST.append((_step_main_scan_res, _step_main_article_res_fn_to_url_ready))
+_STEP_DEPENDENCY_LIST.append((_step_main_scan_res, _step_main_article_res_output_list_ready))
+_STEP_DEPENDENCY_LIST.append((_step_main_article_res_fn_to_url_ready, _feature_base._step_main_output_ready))
+_STEP_DEPENDENCY_LIST.append((_step_main_article_res_output_list_ready, _feature_base._step_main_output_ready))
 
-def _step_output_res(runtime):
+def _step_main_output_res(runtime):
     for res_path, output_path in runtime.article_res_output_list:
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
         if os.path.exists(output_path):
@@ -73,9 +73,9 @@ def _step_output_res(runtime):
         else:
             shutil.copy(res_path, output_path)
 
-_STEP_DEPENDENCY_LIST.append((_feature_base._step_output_ready, _step_output_res))
+_STEP_DEPENDENCY_LIST.append((_feature_base._step_main_output_ready, _step_main_output_res))
 
-def _step_jinja_env(runtime):
+def _step_main_jinja_env(runtime):
     runtime.jinja_env.filters['res'] = jinja_filter_res
 
 @jinja2.pass_context
@@ -89,9 +89,9 @@ def jinja_filter_res(context, input_path):
     return output_url
 
 _STEP_DEPENDENCY_LIST.append((
-    '_feature_templates._step_jinja_env_init',
-    _step_jinja_env,
-    '_feature_templates._step_jinja_env_ready',
+    '_feature_templates._step_main_jinja_env_init',
+    _step_main_jinja_env,
+    '_feature_templates._step_main_jinja_env_ready',
 ))
 
 # Helper functions
