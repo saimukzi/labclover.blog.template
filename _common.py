@@ -1,3 +1,5 @@
+# utility functions which are commonly used across multiple projects
+
 import hashlib
 import os
 import pathlib

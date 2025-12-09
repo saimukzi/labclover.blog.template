@@ -1,3 +1,5 @@
+# utility functions for this project
+
 import os
 from urllib.parse import urljoin
 
