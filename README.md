@@ -1,6 +1,9 @@
-# Natsumi Static Site Generator
+# LabClover Blog Template
 
-Natsumi is a lightweight, extensible static site generator designed to build blogs from simple text files. It reads articles from an `input` folder, processes them through a series of customizable steps, and generates a complete blog in the `docs` folder, ready to be served by any static file server.
+"LabClover Blog Template" is a template of web site generation projects.
+"Natsume" is a module management system to run functions in order according to dependency.
+
+This project is a lightweight, extensible static site generator designed to build blogs from simple text files. It reads articles from an `input` folder, processes them through a series of customizable steps, and generates a complete blog in the `docs` folder, ready to be served by any static file server.
 
 ## How it Works
 
