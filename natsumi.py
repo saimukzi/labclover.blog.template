@@ -1,3 +1,4 @@
+# "Natsume" is a module management system to run functions in order according to dependency.
 # The name "Natsumi" is from the flash video "なつみ STEP!".
 
 import os
@@ -104,3 +105,4 @@ def get_step_key(func):
     if(isinstance(func, str)):
         return func
     return f'{func.__module__}.{func.__name__}'
+
