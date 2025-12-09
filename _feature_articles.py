@@ -109,7 +109,7 @@ def _step_main_output_article(runtime):
 
 _STEP_DEPENDENCY_LIST.append((_feature_base._step_main_output_ready, _step_main_output_article))
 
-def _step_main_resource_suffix_blackset(runtime):
+def _step_main_resource_suffix_blacklist(runtime):
     """Adds the '.article.txt' suffix to the resource blacklist.
 
     Args:
@@ -117,8 +117,8 @@ def _step_main_resource_suffix_blackset(runtime):
     """
     runtime.resource_suffix_blackset.add('.article.txt')
 
-_STEP_DEPENDENCY_LIST.append((_feature_resource._step_main_resource_suffix_blackset_init, _step_main_resource_suffix_blackset))
-_STEP_DEPENDENCY_LIST.append((_step_main_resource_suffix_blackset, _feature_resource._step_main_resource_suffix_blackset_ready))
+_STEP_DEPENDENCY_LIST.append((_feature_resource._step_main_resource_suffix_blacklist_init, _step_main_resource_suffix_blacklist))
+_STEP_DEPENDENCY_LIST.append((_step_main_resource_suffix_blacklist, _feature_resource._step_main_resource_suffix_blacklist_ready))
 
 # _step_outputarticle
 

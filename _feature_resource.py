@@ -10,7 +10,7 @@ import _global
 
 _STEP_DEPENDENCY_LIST = []
 
-def _step_main_resource_suffix_blackset_init(runtime):
+def _step_main_resource_suffix_blacklist_init(runtime):
     """Initializes the resource suffix blacklist.
 
     Args:
@@ -18,7 +18,7 @@ def _step_main_resource_suffix_blackset_init(runtime):
     """
     runtime.resource_suffix_blackset = set()
 
-def _step_main_resource_suffix_blackset_ready(runtime):
+def _step_main_resource_suffix_blacklist_ready(runtime):
     """A placeholder step indicating that the resource suffix blacklist is ready.
 
     Args:
@@ -26,7 +26,7 @@ def _step_main_resource_suffix_blackset_ready(runtime):
     """
     pass
 
-_STEP_DEPENDENCY_LIST.append((_step_main_resource_suffix_blackset_init, _step_main_resource_suffix_blackset_ready))
+_STEP_DEPENDENCY_LIST.append((_step_main_resource_suffix_blacklist_init, _step_main_resource_suffix_blacklist_ready))
 
 def _step_main_gen_file_list(runtime):
     """Generates the list of input resource files.
@@ -53,7 +53,7 @@ def _step_main_input_resource_file_list_ready(runtime):
     pass
 
 _STEP_DEPENDENCY_LIST.append((_feature_base._step_main_load_config,_step_main_gen_file_list))
-_STEP_DEPENDENCY_LIST.append((_step_main_resource_suffix_blackset_ready,_step_main_gen_file_list))
+_STEP_DEPENDENCY_LIST.append((_step_main_resource_suffix_blacklist_ready,_step_main_gen_file_list))
 _STEP_DEPENDENCY_LIST.append((_step_main_gen_file_list,_step_main_input_resource_file_list_ready))
 
 def _step_main_scan_res(runtime):

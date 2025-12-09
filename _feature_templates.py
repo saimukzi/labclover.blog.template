@@ -66,7 +66,7 @@ _STEP_DEPENDENCY_LIST.append((
 
 # _STEP_DEPENDENCY_LIST.append((_feature_base._step_main_output_ready, _step_main_output))
 
-def _step_main_resource_suffix_blackset(runtime):
+def _step_main_resource_suffix_blacklist(runtime):
     """Adds the '.template' suffix to the resource blacklist.
 
     Args:
@@ -74,8 +74,8 @@ def _step_main_resource_suffix_blackset(runtime):
     """
     runtime.resource_suffix_blackset.add('.template')
 
-_STEP_DEPENDENCY_LIST.append((_feature_resource._step_main_resource_suffix_blackset_init, _step_main_resource_suffix_blackset))
-_STEP_DEPENDENCY_LIST.append((_step_main_resource_suffix_blackset, _feature_resource._step_main_resource_suffix_blackset_ready))
+_STEP_DEPENDENCY_LIST.append((_feature_resource._step_main_resource_suffix_blacklist_init, _step_main_resource_suffix_blacklist))
+_STEP_DEPENDENCY_LIST.append((_step_main_resource_suffix_blacklist, _feature_resource._step_main_resource_suffix_blacklist_ready))
 
 # jinja_env functions
 
