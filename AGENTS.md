@@ -24,6 +24,25 @@ This modular design allows for easy extension and customization. You can add new
 -   `cmd_gen.py`: The command-line interface for running the static site generator.
 -   `config.json`: The main configuration file for the project.
 
+## Environment Setup
+
+Coding agents must use a `.venv` python environment and must not use the system python environment.
+
+1.  **Create and activate the virtual environment:**
+    If a `.venv` directory does not exist, create it:
+    ```bash
+    python -m venv .venv
+    ```
+    Activate the virtual environment:
+    ```bash
+    source .venv/bin/activate
+    ```
+
+2.  **Install dependencies:**
+    ```bash
+    pip install -r requirements.txt
+    ```
+
 ## How to Run
 
 To generate the blog, run the following command from the root of the repository:
