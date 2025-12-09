@@ -9,6 +9,12 @@ import _common
 MY_PATH = os.path.abspath(__file__)
 
 def main():
+    """Main entry point for the static site generator.
+
+    This function parses command-line arguments, initializes the runtime
+    environment, discovers and sorts the step functions using natsumi,
+    and executes the 'main' step functions to generate the site.
+    """
     parser = argparse.ArgumentParser(description='Generate the article')
     parser.add_argument('--config', type=str, default='config.json', help='config file')
 

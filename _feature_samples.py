@@ -3,6 +3,15 @@ import _feature_articles
 _STEP_DEPENDENCY_LIST = []
 
 def _step_main_filter(runtime):
+    """Filters out sample articles from the article list.
+
+    This function checks if all articles are samples. If they are not, it
+    removes any articles marked as 'is_sample' from the 'article_meta_list'
+    in the runtime environment.
+
+    Args:
+        runtime: The runtime environment object.
+    """
     is_all_sample = True
     for runtime.article in runtime.article_meta_list:
         if runtime.article['is_sample']: continue

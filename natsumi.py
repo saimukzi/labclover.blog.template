@@ -4,6 +4,21 @@ import os
 import importlib
 
 def gen_stepfunc_list_dict(search_path, module_prefix):
+    """Discovers, sorts, and organizes step functions from modules.
+
+    This function scans a directory for modules with a given prefix, identifies
+    functions that follow the `_step_` naming convention, and sorts them based
+    on their declared dependencies. The functions are then grouped by their
+    step ID into a dictionary.
+
+    Args:
+        search_path (str): The path to the directory to search for modules.
+        module_prefix (str): The prefix used to identify feature modules.
+
+    Returns:
+        dict: A dictionary where keys are step IDs and values are lists of
+              sorted step functions.
+    """
     my_dir = os.path.dirname(search_path)
     feature_module_list = os.listdir(my_dir)
     feature_module_list = filter(lambda x: x.startswith(module_prefix), feature_module_list)
@@ -74,6 +89,18 @@ def gen_stepfunc_list_dict(search_path, module_prefix):
     return ret_stepfunc_list_dict
 
 def get_step_key(func):
+    """Generates a unique key for a step function.
+
+    This key is used to identify and manage dependencies between step
+    functions. If the input is already a string, it is returned as-is.
+
+    Args:
+        func (function or str): The function to generate a key for, or a
+                                string that is already a key.
+
+    Returns:
+        str: A unique string identifier for the function.
+    """
     if(isinstance(func, str)):
         return func
     return f'{func.__module__}.{func.__name__}'
