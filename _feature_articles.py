@@ -12,12 +12,22 @@ import _global
 _STEP_DEPENDENCY_LIST = []
 
 def _step_main_gen_article_file_list(runtime):
+    """Generates a list of article files from the input directory.
+
+    Args:
+        runtime: The runtime environment object.
+    """
     article_dir = runtime.config_data['input_path']
     article_file_list = _common.find_file(article_dir)
     article_file_list = list(filter(lambda x: x.endswith('.article.txt'), article_file_list))
     runtime.article_file_list = article_file_list
 
 def _step_main_article_file_list_ready(runtime):
+    """A placeholder step indicating that the article file list is ready.
+
+    Args:
+        runtime: The runtime environment object.
+    """
     pass
 
 _STEP_DEPENDENCY_LIST.append((_feature_base._step_main_load_config, _step_main_gen_article_file_list))
@@ -25,6 +35,11 @@ _STEP_DEPENDENCY_LIST.append((_step_main_gen_article_file_list, _step_main_artic
 _STEP_DEPENDENCY_LIST.append((_step_main_article_file_list_ready, _feature_base._step_main_output_ready))
 
 def _step_main_gen_article_meta_list(runtime):
+    """Generates a list of article metadata from the article files.
+
+    Args:
+        runtime: The runtime environment object.
+    """
     runtime.article_meta_list = []
     for article_path in runtime.article_file_list:
         article_meta = get_article_data(article_path)['meta']
@@ -33,6 +48,11 @@ def _step_main_gen_article_meta_list(runtime):
         runtime.article_meta_list.append(article_meta)
 
 def _step_main_article_meta_list_ready(runtime):
+    """A placeholder step indicating that the article metadata list is ready.
+
+    Args:
+        runtime: The runtime environment object.
+    """
     pass
 
 _STEP_DEPENDENCY_LIST.append((_step_main_gen_article_file_list, _step_main_gen_article_meta_list))
@@ -40,6 +60,11 @@ _STEP_DEPENDENCY_LIST.append((_step_main_gen_article_meta_list, _step_main_artic
 _STEP_DEPENDENCY_LIST.append((_step_main_article_meta_list_ready, _feature_base._step_main_output_ready))
 
 def _step_main_output_article(runtime):
+    """Outputs each article by executing the 'outputarticle' step functions.
+
+    Args:
+        runtime: The runtime environment object.
+    """
     for article_meta in runtime.article_meta_list:
         # article_data = get_article_data(article_meta['_path'])
         # article_meta = article_data['meta']
@@ -85,6 +110,11 @@ def _step_main_output_article(runtime):
 _STEP_DEPENDENCY_LIST.append((_feature_base._step_main_output_ready, _step_main_output_article))
 
 def _step_main_resource_suffix_blackset(runtime):
+    """Adds the '.article.txt' suffix to the resource blacklist.
+
+    Args:
+        runtime: The runtime environment object.
+    """
     runtime.resource_suffix_blackset.add('.article.txt')
 
 _STEP_DEPENDENCY_LIST.append((_feature_resource._step_main_resource_suffix_blackset_init, _step_main_resource_suffix_blackset))
@@ -93,14 +123,32 @@ _STEP_DEPENDENCY_LIST.append((_step_main_resource_suffix_blackset, _feature_reso
 # _step_outputarticle
 
 def _step_outputarticle_article_data(article_runtime, main_runtime):
+    """Loads the article data for the current article.
+
+    Args:
+        article_runtime: The runtime environment for the specific article.
+        main_runtime: The main runtime environment object.
+    """
     article_runtime.article_data = get_article_data(article_runtime.article_meta['_path'])
 
 def _step_outputarticle_db_path(article_runtime, main_runtime):
+    """Determines and creates the database path for the article.
+
+    Args:
+        article_runtime: The runtime environment for the specific article.
+        main_runtime: The main runtime environment object.
+    """
     db_path = _global.db_path('article.'+article_runtime.article_meta['id'], main_runtime)
     article_runtime.db_path = db_path
     os.makedirs(db_path, exist_ok=True)
 
 def _step_outputarticle_output_meta(article_runtime, main_runtime):
+    """Outputs the article metadata to a JSON file.
+
+    Args:
+        article_runtime: The runtime environment for the specific article.
+        main_runtime: The main runtime environment object.
+    """
     meta_output_path = os.path.join(article_runtime.db_path, 'meta.json')
     article_runtime.meta_output_path = meta_output_path
     with open(meta_output_path, 'w') as f:
@@ -109,6 +157,12 @@ def _step_outputarticle_output_meta(article_runtime, main_runtime):
 _STEP_DEPENDENCY_LIST.append((_step_outputarticle_db_path, _step_outputarticle_output_meta))
 
 def _step_outputarticle_article_content(article_runtime, main_runtime):
+    """Renders the article content using Jinja2.
+
+    Args:
+        article_runtime: The runtime environment for the specific article.
+        main_runtime: The main runtime environment object.
+    """
     render_data = {
         'res_base_absnpath': os.path.dirname(article_runtime.article_meta['_path']),
         'article_runtime': article_runtime,
@@ -124,6 +178,12 @@ def _step_outputarticle_article_content(article_runtime, main_runtime):
 _STEP_DEPENDENCY_LIST.append((_step_outputarticle_article_data, _step_outputarticle_article_content))
 
 def _step_outputarticle_output_content_txt(article_runtime, main_runtime):
+    """Outputs the rendered article content to a text file.
+
+    Args:
+        article_runtime: The runtime environment for the specific article.
+        main_runtime: The main runtime environment object.
+    """
     content_txt_output_path = os.path.join(article_runtime.db_path, 'content.txt')
     article_runtime.content_txt_output_path = content_txt_output_path
     with open(content_txt_output_path, 'wt', encoding='utf-8') as f:
@@ -132,6 +192,12 @@ def _step_outputarticle_output_content_txt(article_runtime, main_runtime):
 _STEP_DEPENDENCY_LIST.append((_step_outputarticle_article_content, _step_outputarticle_output_content_txt))
 
 def _step_outputarticle_output_content_html(article_runtime, main_runtime):
+    """Outputs the final article as an HTML file.
+
+    Args:
+        article_runtime: The runtime environment for the specific article.
+        main_runtime: The main runtime environment object.
+    """
     render_data = {
         'res_base_absnpath': main_runtime.config_data['input_path'],
         'article_runtime': article_runtime,
@@ -155,6 +221,18 @@ ARTICLE_META_DEFAULT = {
     'tags': [],
 }
 def get_article_data(article_path):
+    """Reads and parses an article file.
+
+    This function reads an article file, which is expected to have three
+    sections: metadata (in JSON format), and content, each delimited by
+    '===' lines.
+
+    Args:
+        article_path (str): The path to the article file.
+
+    Returns:
+        dict: A dictionary containing the article's 'meta' and 'content'.
+    """
     article = _common.read_file(article_path)
     article_meta_start_line_num = article.index('=== META START ===')
     article_meta_end_line_num = article.index('=== META END ===')

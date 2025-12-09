@@ -10,11 +10,25 @@ import _feature_resource
 _STEP_DEPENDENCY_LIST = []
 
 def _step_main_jinja_env_init(runtime):
+    """Initializes the Jinja2 environment.
+
+    This function creates a Jinja2 environment, sets up the file system
+    loader, and adds custom filters for JSON encoding and absolute URL
+    generation.
+
+    Args:
+        runtime: The runtime environment object.
+    """
     runtime.jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(runtime.config_data['input_path']))
     runtime.jinja_env.filters['json_encode'] = jinja_filter_json_encode
     runtime.jinja_env.filters['abs'] = jinja_filter_abs
 
 def _step_main_jinja_env_ready(runtime):
+    """A placeholder step indicating that the Jinja2 environment is ready.
+
+    Args:
+        runtime: The runtime environment object.
+    """
     pass
 
 _STEP_DEPENDENCY_LIST.append((_feature_base._step_main_load_config, _step_main_jinja_env_init))
@@ -22,6 +36,11 @@ _STEP_DEPENDENCY_LIST.append((_step_main_jinja_env_init, _step_main_jinja_env_re
 _STEP_DEPENDENCY_LIST.append((_step_main_jinja_env_ready, _feature_base._step_main_output_ready))
 
 def _step_main_init_main_template(runtime):
+    """Initializes the main template for the site.
+
+    Args:
+        runtime: The runtime environment object.
+    """
     runtime.main_template = runtime.jinja_env.get_template('_main.html.template')
 
 _STEP_DEPENDENCY_LIST.append((
@@ -48,6 +67,11 @@ _STEP_DEPENDENCY_LIST.append((
 # _STEP_DEPENDENCY_LIST.append((_feature_base._step_main_output_ready, _step_main_output))
 
 def _step_main_resource_suffix_blackset(runtime):
+    """Adds the '.template' suffix to the resource blacklist.
+
+    Args:
+        runtime: The runtime environment object.
+    """
     runtime.resource_suffix_blackset.add('.template')
 
 _STEP_DEPENDENCY_LIST.append((_feature_resource._step_main_resource_suffix_blackset_init, _step_main_resource_suffix_blackset))
@@ -56,10 +80,31 @@ _STEP_DEPENDENCY_LIST.append((_step_main_resource_suffix_blackset, _feature_reso
 # jinja_env functions
 
 def jinja_filter_json_encode(obj):
+    """A Jinja2 filter for encoding an object to a JSON string.
+
+    Args:
+        obj: The object to encode.
+
+    Returns:
+        str: The JSON-encoded string representation of the object.
+    """
     return json.dumps(obj)
 
 @jinja2.pass_context
 def jinja_filter_abs(context, input_uri):
+    """A Jinja2 filter for creating absolute URLs.
+
+    This filter resolves a given URI, which can be either a root-relative
+    path (starting with '/') or a path relative to the current resource,
+    into a full absolute URL based on the site's base URL.
+
+    Args:
+        context: The Jinja2 context.
+        input_uri (str): The URI to resolve.
+
+    Returns:
+        str: The absolute URL.
+    """
     runtime = context['main_runtime']
     if input_uri.startswith('/'):
         output_url = urljoin(runtime.config_data['base_url'], input_uri[1:])

@@ -13,6 +13,15 @@ import _global
 _STEP_DEPENDENCY_LIST = []
 
 def _step_main_scan(runtime):
+    """Scans the input directory for files to be copied.
+
+    This function identifies files that match the regular expressions
+    defined in the 'copy_re_list' configuration and adds them to the
+    'copy_absnpath_list' in the runtime environment.
+
+    Args:
+        runtime: The runtime environment object.
+    """
     copy_re_list = runtime.config_data.get('copy_re_list', [])
     copy_re_list = list(map(re.compile, copy_re_list))
 
@@ -33,6 +42,15 @@ def _step_main_scan(runtime):
 _STEP_DEPENDENCY_LIST.append((_feature_base._step_main_load_config, _step_main_scan))
 
 def _step_main_filter(runtime):
+    """Filters the list of input resource files.
+
+    This function removes any files that are slated for copying from the
+    'input_resource_file_list' to prevent them from being processed as
+    standard resources.
+
+    Args:
+        runtime: The runtime environment object.
+    """
     copy_absnpath_set = set(runtime.copy_absnpath_list)
     runtime.input_resource_file_list = list(filter(lambda x: x not in copy_absnpath_set, runtime.input_resource_file_list))
 
@@ -42,6 +60,11 @@ _STEP_DEPENDENCY_LIST.append((_feature_resource._step_main_gen_file_list, _step_
 _STEP_DEPENDENCY_LIST.append((_step_main_filter, _feature_resource._step_main_input_resource_file_list_ready))
 
 def _step_main_copy(runtime):
+    """Copies the identified files to the output directory.
+
+    Args:
+        runtime: The runtime environment object.
+    """
     for copy_absnpath in runtime.copy_absnpath_list:
         copy_relnpath = os.path.relpath(copy_absnpath, runtime.config_data['input_path'])
         copy_output_npath = os.path.join(runtime.config_data['output_path'], copy_relnpath)
